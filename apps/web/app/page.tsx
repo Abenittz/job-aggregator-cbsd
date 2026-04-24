@@ -1,102 +1,110 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
+import { Job } from "@repo/types";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
+async function getJobs(): Promise<Job[]> {
+  const res = await fetch("http://localhost:5000/api/jobs", {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    return [];
+  }
+  return res.json();
+}
 
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
+export default async function Page() {
+  const jobs = await getJobs();
 
   return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
-
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.dev/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.dev?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turborepo.dev →
-        </a>
-      </footer>
+    <div
+      style={{
+        padding: "2rem",
+        maxWidth: "800px",
+        margin: "0 auto",
+        fontFamily: "sans-serif",
+      }}
+    >
+      <h1 style={{ textAlign: "center", marginBottom: "2rem", color: "#333" }}>
+        Latest Jobs
+      </h1>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        {jobs.length > 0 ? (
+          jobs.map((job) => (
+            <div
+              key={job.id}
+              style={{
+                border: "1px solid #eaeaea",
+                borderRadius: "8px",
+                padding: "1.5rem",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <h2
+                  style={{ margin: 0, color: "#0070f3", fontSize: "1.25rem" }}
+                >
+                  {job.title}
+                </h2>
+                <span
+                  style={{
+                    background: "#e0f7fa",
+                    color: "#006064",
+                    padding: "0.25rem 0.5rem",
+                    borderRadius: "4px",
+                    fontSize: "0.875rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {job.type}
+                </span>
+              </div>
+              <p
+                style={{
+                  margin: "0 0 1rem 0",
+                  color: "#555",
+                  fontWeight: "500",
+                }}
+              >
+                {job.company} • {job.location}
+              </p>
+              <p
+                style={{
+                  margin: "0 0 1rem 0",
+                  color: "#333",
+                  lineHeight: "1.5",
+                }}
+              >
+                {job.description}
+              </p>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderTop: "1px solid #eaeaea",
+                  paddingTop: "1rem",
+                }}
+              >
+                <span style={{ color: "#2e7d32", fontWeight: "bold" }}>
+                  {job.salary}
+                </span>
+                <span style={{ color: "#888", fontSize: "0.875rem" }}>
+                  {new Date(job.postedAt).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p style={{ textAlign: "center", color: "#888" }}>
+            No jobs found. Make sure the API is running.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
