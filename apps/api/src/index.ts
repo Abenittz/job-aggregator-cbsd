@@ -49,6 +49,20 @@ app.get("/api/jobs", (req, res) => {
       postedAt: new Date(Date.now() - 172800000).toISOString(),
     },
   ];
+
+  const search = req.query.q as string;
+  if (search) {
+    const lowerSearch = search.toLowerCase();
+    const filteredJobs = jobs.filter(
+      (job) =>
+        job.title.toLowerCase().includes(lowerSearch) ||
+        job.company.toLowerCase().includes(lowerSearch) ||
+        job.description.toLowerCase().includes(lowerSearch)
+    );
+    res.json(filteredJobs);
+    return;
+  }
+
   res.json(jobs);
 });
 

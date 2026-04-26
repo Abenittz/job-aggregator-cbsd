@@ -1,7 +1,11 @@
 import { Job } from "@repo/types";
 
-async function getJobs(): Promise<Job[]> {
-  const res = await fetch("http://localhost:5000/api/jobs", {
+async function getJobs(query?: string): Promise<Job[]> {
+  const url = query
+    ? `http://localhost:5000/api/jobs?q=${encodeURIComponent(query)}`
+    : `http://localhost:5000/api/jobs`;
+
+  const res = await fetch(url, {
     cache: "no-store",
   });
   if (!res.ok) {
@@ -10,8 +14,14 @@ async function getJobs(): Promise<Job[]> {
   return res.json();
 }
 
-export default async function Page() {
-  const jobs = await getJobs();
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedParams = await searchParams;
+  const query = typeof resolvedParams.q === "string" ? resolvedParams.q : undefined;
+  const jobs = await getJobs(query);
 
   return (
     <div
@@ -25,6 +35,46 @@ export default async function Page() {
       <h1 style={{ textAlign: "center", marginBottom: "2rem", color: "#333" }}>
         Latest Jobs
       </h1>
+
+      <form
+        method="GET"
+        style={{
+          display: "flex",
+          gap: "0.5rem",
+          marginBottom: "2rem",
+        }}
+      >
+        <input
+          type="text"
+          name="q"
+          defaultValue={query || ""}
+          placeholder="Search jobs by title, company, or description..."
+          style={{
+            flex: 1,
+            padding: "0.75rem 1rem",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            outline: "none",
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: "0.75rem 1.5rem",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            border: "none",
+            backgroundColor: "#0070f3",
+            color: "white",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Search
+        </button>
+      </form>
+
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         {jobs.length > 0 ? (
           jobs.map((job) => (
