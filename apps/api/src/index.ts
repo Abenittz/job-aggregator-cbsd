@@ -57,7 +57,7 @@ app.get("/api/jobs", (req, res) => {
       (job) =>
         job.title.toLowerCase().includes(lowerSearch) ||
         job.company.toLowerCase().includes(lowerSearch) ||
-        job.description.toLowerCase().includes(lowerSearch)
+        job.description.toLowerCase().includes(lowerSearch),
     );
     res.json(filteredJobs);
     return;

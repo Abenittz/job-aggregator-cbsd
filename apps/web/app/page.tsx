@@ -20,7 +20,8 @@ export default async function Page({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const resolvedParams = await searchParams;
-  const query = typeof resolvedParams.q === "string" ? resolvedParams.q : undefined;
+  const query =
+    typeof resolvedParams.q === "string" ? resolvedParams.q : undefined;
   const jobs = await getJobs(query);
 
   return (
