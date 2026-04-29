@@ -1,159 +1,192 @@
-# Turborepo starter
+# 🚀 LinkHire Monorepo
 
-This Turborepo starter is maintained by the Turborepo core team.
+A **production-grade monorepo** built using **TurboRepo**, featuring a modern full-stack architecture with:
 
-## Using this example
+- ⚡ **Next.js** (Frontend)
+- 🧠 **Express.js** (Backend API)
+- 📦 **Shared Packages** (Types, Utils, UI)
+- 🔄 **TurboRepo** for task orchestration and caching
 
-Run the following command:
+---
 
-```sh
+# 📖 Overview
+
+This project demonstrates how to build a **scalable full-stack application** using a monorepo approach. It is designed to simulate a real-world system such as a **job aggregation platform**, where multiple services and applications share code efficiently.
+
+---
+
+# 🏗 Architecture
+
+```
+apps/
+web/ → Next.js frontend application
+api/ → Express.js backend server
+
+packages/
+types/ → Shared TypeScript types
+utils/ → Shared helper functions
+ui/ → Shared UI components (optional)
+
+turbo.json
+pnpm-workspace.yaml
+```
+
+---
+
+# 🧠 Key Concepts
+
+## Monorepo
+
+A monorepo allows multiple applications and packages to live in a single repository, enabling:
+
+- Code sharing
+- Easier refactoring
+- Unified tooling
+- Better developer experience
+
+---
+
+## TurboRepo
+
+TurboRepo provides:
+
+- ⚡ Incremental builds
+- 🧩 Task pipelines
+- 💾 Smart caching
+- 🚀 Faster CI/CD
+
+---
+
+## Shared Packages
+
+Shared packages ensure consistency across frontend and backend:
+
+- `@repo/types` → Shared interfaces
+- `@repo/utils` → Utility functions
+- `@repo/ui` → Reusable components
+
+---
+
+# ⚙️ Tech Stack
+
+| Layer           | Technology           |
+| --------------- | -------------------- |
+| Frontend        | Next.js (App Router) |
+| Backend         | Express.js           |
+| Language        | TypeScript           |
+| Monorepo        | TurboRepo            |
+| Package Manager | pnpm                 |
+
+---
+
+# 🚀 Getting Started
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/hirebase-monorepo.git
+cd hirebase-monorepo
+```
+
+## 2. Install Dependencies
+
+```bash
+pnpm install
+```
+
+## 3. Run Development Servers
+
+```bash
+pnpm dev
+```
+
+### This will start:
+
+- 🌐 Frontend → http://localhost:3000
+- ⚙️ Backend → http://localhost:5000
+
+## 🔧 Project Setup Guide (From Scratch)
+
+### Step 1: Create Monorepo
+
+```bash
 npx create-turbo@latest
 ```
 
-## What's inside?
+Select:
 
-This Turborepo includes the following packages/apps:
+- Package manager → pnpm
+- Template → basic
 
-### Apps and Packages
+### Step 2: Create Applications
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+#### Next.js App
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Already included in apps/web
 
-### Utilities
+#### Express API
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+mkdir apps/api
+cd apps/api
+pnpm init -y
 ```
 
-Without global `turbo`, use your package manager:
+Install dependencies:
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm add express cors dotenv
+pnpm add -D typescript ts-node-dev @types/node @types/express
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Step 3: Create Shared Packages
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```bash
+mkdir packages/types
 ```
 
-Without global `turbo`:
+example:
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+// packages/types/index.ts
+export interface Job {
+  id: number;
+  title: string;
+  company: string;
+}
 ```
 
-### Develop
+### Step 4: Configure Workspace
 
-To develop all apps and packages, run the following command:
+#### pnpm-workspace.yaml
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+```bash
+packages:
+  - "apps/*"
+  - "packages/*"
 ```
 
-Without global `turbo`, use your package manager:
+### Step 5: Setup Turbo
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
+turbo.json
+
+```json
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "dev": {
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    }
+  }
+}
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 🔗 Using Shared Packages
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
+```bash
+import { Job } from "@repo/types";
 ```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
