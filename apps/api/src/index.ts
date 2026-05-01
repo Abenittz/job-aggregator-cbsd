@@ -1,9 +1,8 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import { Job } from "@repo/types";
-
-dotenv.config();
+import { env } from "./config/env";
+import { connectDatabase } from "./config/database";
 
 const app = express();
 app.use(cors());
@@ -68,6 +67,10 @@ app.get("/api/jobs", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+// Connect to database
+connectDatabase();
+
 app.listen(PORT, () => {
   console.log(`API running on http://localhost:${PORT}`);
+  console.log(`Environment: ${env.NODE_ENV}`);
 });
