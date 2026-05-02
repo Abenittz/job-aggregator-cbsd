@@ -1,9 +1,17 @@
 import { Job } from "@repo/types";
 
-async function getJobs(query?: string): Promise<Job[]> {
-  const url = query
-    ? `http://localhost:5000/api/jobs?q=${encodeURIComponent(query)}`
-    : `http://localhost:5000/api/jobs`;
+async function getJobs(
+  query?: string,
+  type?: string,
+  location?: string,
+): Promise<Job[]> {
+  const params = new URLSearchParams();
+  if (query) params.append("q", query);
+  if (type) params.append("type", type);
+  if (location) params.append("location", location);
+
+  const queryString = params.toString();
+  const url = `http://localhost:5000/api/jobs${queryString ? "?" + queryString : ""}`;
 
   const res = await fetch(url, {
     cache: "no-store",
@@ -22,7 +30,13 @@ export default async function Page({
   const resolvedParams = await searchParams;
   const query =
     typeof resolvedParams.q === "string" ? resolvedParams.q : undefined;
-  const jobs = await getJobs(query);
+  const type =
+    typeof resolvedParams.type === "string" ? resolvedParams.type : undefined;
+  const location =
+    typeof resolvedParams.location === "string"
+      ? resolvedParams.location
+      : undefined;
+  const jobs = await getJobs(query, type, location);
 
   return (
     <div
@@ -43,6 +57,7 @@ export default async function Page({
           display: "flex",
           gap: "0.5rem",
           marginBottom: "2rem",
+          flexWrap: "wrap",
         }}
       >
         <input
@@ -52,6 +67,38 @@ export default async function Page({
           placeholder="Search jobs by title, company, or description..."
           style={{
             flex: 1,
+            minWidth: "200px",
+            padding: "0.75rem 1rem",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            outline: "none",
+          }}
+        />
+        <select
+          name="type"
+          defaultValue={type || ""}
+          style={{
+            padding: "0.75rem 1rem",
+            fontSize: "1rem",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            outline: "none",
+            backgroundColor: "white",
+          }}
+        >
+          <option value="">All Types</option>
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Contract">Contract</option>
+          <option value="Internship">Internship</option>
+        </select>
+        <input
+          type="text"
+          name="location"
+          defaultValue={location || ""}
+          placeholder="Location..."
+          style={{
             padding: "0.75rem 1rem",
             fontSize: "1rem",
             borderRadius: "8px",

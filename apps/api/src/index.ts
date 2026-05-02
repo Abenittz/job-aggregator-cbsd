@@ -50,19 +50,33 @@ app.get("/api/jobs", (req, res) => {
   ];
 
   const search = req.query.q as string;
+  const type = req.query.type as string;
+  const location = req.query.location as string;
+
+  let filteredJobs = jobs;
+
   if (search) {
     const lowerSearch = search.toLowerCase();
-    const filteredJobs = jobs.filter(
+    filteredJobs = filteredJobs.filter(
       (job) =>
         job.title.toLowerCase().includes(lowerSearch) ||
         job.company.toLowerCase().includes(lowerSearch) ||
         job.description.toLowerCase().includes(lowerSearch),
     );
-    res.json(filteredJobs);
-    return;
   }
 
-  res.json(jobs);
+  if (type) {
+    filteredJobs = filteredJobs.filter((job) => job.type === type);
+  }
+
+  if (location) {
+    const lowerLocation = location.toLowerCase();
+    filteredJobs = filteredJobs.filter((job) =>
+      job.location.toLowerCase().includes(lowerLocation),
+    );
+  }
+
+  res.json(filteredJobs);
 });
 
 const PORT = process.env.PORT || 5000;
