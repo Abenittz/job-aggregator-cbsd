@@ -1,4 +1,5 @@
 import { Job } from "@repo/types";
+import Link from "next/link";
 
 async function getJobs(
   query?: string,
@@ -144,9 +145,14 @@ export default async function Page({
                 }}
               >
                 <h2
-                  style={{ margin: 0, color: "#0070f3", fontSize: "1.25rem" }}
+                  style={{ margin: 0, fontSize: "1.25rem" }}
                 >
-                  {job.title}
+                  <Link
+                    href={`/jobs/${job.id}`}
+                    style={{ color: "#0070f3", textDecoration: "none" }}
+                  >
+                    {job.title}
+                  </Link>
                 </h2>
                 <span
                   style={{

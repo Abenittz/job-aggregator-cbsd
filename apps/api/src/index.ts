@@ -12,43 +12,43 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "API is running 🚀" });
 });
 
-app.get("/api/jobs", (req, res) => {
-  const jobs: Job[] = [
-    {
-      id: 1,
-      title: "Senior Frontend Developer",
-      company: "TechCorp",
-      location: "Remote",
-      type: "Full-time",
-      salary: "$120,000 - $150,000",
-      description:
-        "We are looking for an experienced frontend developer proficient in React and Next.js.",
-      postedAt: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      title: "Backend Engineer",
-      company: "DataSync",
-      location: "New York, NY",
-      type: "Full-time",
-      salary: "$130,000 - $160,000",
-      description:
-        "Join our data infrastructure team building high-performance Node.js microservices.",
-      postedAt: new Date(Date.now() - 86400000).toISOString(),
-    },
-    {
-      id: 3,
-      title: "UI/UX Designer",
-      company: "DesignCo",
-      location: "San Francisco, CA",
-      type: "Contract",
-      salary: "$60 - $80 / hr",
-      description:
-        "Looking for a talented designer to revamp our core product interface.",
-      postedAt: new Date(Date.now() - 172800000).toISOString(),
-    },
-  ];
+const jobs: Job[] = [
+  {
+    id: 1,
+    title: "Senior Frontend Developer",
+    company: "TechCorp",
+    location: "Remote",
+    type: "Full-time",
+    salary: "$120,000 - $150,000",
+    description:
+      "We are looking for an experienced frontend developer proficient in React and Next.js.",
+    postedAt: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    title: "Backend Engineer",
+    company: "DataSync",
+    location: "New York, NY",
+    type: "Full-time",
+    salary: "$130,000 - $160,000",
+    description:
+      "Join our data infrastructure team building high-performance Node.js microservices.",
+    postedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: 3,
+    title: "UI/UX Designer",
+    company: "DesignCo",
+    location: "San Francisco, CA",
+    type: "Contract",
+    salary: "$60 - $80 / hr",
+    description:
+      "Looking for a talented designer to revamp our core product interface.",
+    postedAt: new Date(Date.now() - 172800000).toISOString(),
+  },
+];
 
+app.get("/api/jobs", (req, res) => {
   const search = req.query.q as string;
   const type = req.query.type as string;
   const location = req.query.location as string;
@@ -77,6 +77,18 @@ app.get("/api/jobs", (req, res) => {
   }
 
   res.json(filteredJobs);
+});
+
+app.get("/api/jobs/:id", (req, res) => {
+  const jobId = parseInt(req.params.id, 10);
+  const job = jobs.find((j) => j.id === jobId);
+
+  if (!job) {
+    res.status(404).json({ error: "Job not found" });
+    return;
+  }
+
+  res.json(job);
 });
 
 const PORT = process.env.PORT || 5000;
