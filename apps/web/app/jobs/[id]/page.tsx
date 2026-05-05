@@ -1,6 +1,7 @@
 import { Job } from "@repo/types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import SaveButton from "../../components/SaveButton";
 
 async function getJob(id: string): Promise<Job | null> {
   const res = await fetch(`http://localhost:5000/api/jobs/${id}`, {
@@ -64,9 +65,12 @@ export default async function JobDetailPage({
             marginBottom: "1rem",
           }}
         >
-          <h1 style={{ margin: 0, color: "#333", fontSize: "2rem" }}>
-            {job.title}
-          </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <h1 style={{ margin: 0, color: "#333", fontSize: "2rem" }}>
+              {job.title}
+            </h1>
+            <SaveButton jobId={job.id} initialSaved={job.isSaved} />
+          </div>
           <span
             style={{
               background: "#e0f7fa",

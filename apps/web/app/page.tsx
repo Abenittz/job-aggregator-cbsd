@@ -1,5 +1,6 @@
 import { Job } from "@repo/types";
 import Link from "next/link";
+import SaveButton from "./components/SaveButton";
 
 async function getJobs(
   query?: string,
@@ -144,16 +145,19 @@ export default async function Page({
                   marginBottom: "0.5rem",
                 }}
               >
-                <h2
-                  style={{ margin: 0, fontSize: "1.25rem" }}
-                >
-                  <Link
-                    href={`/jobs/${job.id}`}
-                    style={{ color: "#0070f3", textDecoration: "none" }}
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <h2
+                    style={{ margin: 0, fontSize: "1.25rem" }}
                   >
-                    {job.title}
-                  </Link>
-                </h2>
+                    <Link
+                      href={`/jobs/${job.id}`}
+                      style={{ color: "#0070f3", textDecoration: "none" }}
+                    >
+                      {job.title}
+                    </Link>
+                  </h2>
+                  <SaveButton jobId={job.id} initialSaved={job.isSaved} />
+                </div>
                 <span
                   style={{
                     background: "#e0f7fa",
