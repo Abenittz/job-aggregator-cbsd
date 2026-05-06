@@ -49,9 +49,24 @@ export default async function Page({
         fontFamily: "sans-serif",
       }}
     >
-      <h1 style={{ textAlign: "center", marginBottom: "2rem", color: "#333" }}>
-        Latest Jobs
-      </h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+        <h1 style={{ margin: 0, color: "#333" }}>
+          Latest Jobs
+        </h1>
+        <Link
+          href="/dashboard"
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#eaeaea",
+            color: "#333",
+            textDecoration: "none",
+            borderRadius: "8px",
+            fontWeight: "bold",
+          }}
+        >
+          My Dashboard
+        </Link>
+      </div>
 
       <form
         method="GET"

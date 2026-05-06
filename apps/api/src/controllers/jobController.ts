@@ -38,3 +38,10 @@ export const toggleSaveJob = (req: Request, res: Response) => {
 
   res.json({ success: true, isSaved: !!save });
 };
+
+export const getDashboardJobs = (req: Request, res: Response) => {
+  res.json({
+    savedJobs: JobModel.getSavedJobs(),
+    recentJobs: JobModel.getRecentlyViewedJobs(),
+  });
+};

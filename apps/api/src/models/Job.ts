@@ -37,6 +37,7 @@ const jobs: Job[] = [
 ];
 
 const savedJobIds = new Set<number>();
+let recentlyViewedIds: number[] = [];
 
 export const JobModel = {
   findAll: (query?: string, type?: string, location?: string) => {
@@ -66,7 +67,26 @@ export const JobModel = {
   findById: (id: number) => {
     const job = jobs.find((j) => j.id === id);
     if (!job) return null;
+
+    // Track recently viewed
+    recentlyViewedIds = recentlyViewedIds.filter((v) => v !== id);
+    recentlyViewedIds.unshift(id);
+    if (recentlyViewedIds.length > 10) recentlyViewedIds.pop(); // Keep last 10
+
     return { ...job, isSaved: savedJobIds.has(job.id) };
+  },
+
+  getSavedJobs: () => {
+    return jobs
+      .filter((j) => savedJobIds.has(j.id))
+      .map((j) => ({ ...j, isSaved: true }));
+  },
+
+  getRecentlyViewedJobs: () => {
+    return recentlyViewedIds.map((id) => {
+      const job = jobs.find((j) => j.id === id)!;
+      return { ...job, isSaved: savedJobIds.has(id) };
+    });
   },
 
   saveJob: (id: number) => {
